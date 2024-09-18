@@ -56,15 +56,18 @@ for k = 1:LoopCount
     CR = 0.9;
 
     % 设置温度参数
-    T = 9000/k;
+    T = 60.1-0.006*k;
 
     %500代选择优良个体一次
     if mod(k,500) ==0 
     
         %初始化存档B
-        B = [];
-
+        if k == 500
+            B = [];
+        end
+        
         stagnantCounter = zeros(PopSize, 1);
+        lastGeneration = zeros(PopSize,1);
 
         % 4.3 选择操作
         % 计算适应度（直接使用原始适应度值，较小的值更好）
@@ -101,7 +104,7 @@ for k = 1:LoopCount
         
         % 将未被选中的个体添加到存档B中
         B = [B; Solution(unselected_indices, :)];
-        
+
         % 如果B的大小超过PopSize，保留最好的PopSize个个体
         if size(B, 1) > PopSize
             [~, sorted_indices] = sort(B(:, end));
@@ -119,7 +122,7 @@ for k = 1:LoopCount
 
         % 4.5 变异操作
         % 优化：使用矩阵运算代替循环
-        V = new_population(:,1:SearchDimension) + F * (Solution(r(:,2),1:SearchDimension) - Solution(r(:,3),1:SearchDimension));
+        V = Solution(r(1:PopSize,1),1:SearchDimension) + F * (Solution(r(:,2),1:SearchDimension) - Solution(r(:,3),1:SearchDimension));
 
         % 4.6 边界处理
         % 优化：使用逻辑索引代替条件语句
@@ -154,8 +157,8 @@ for k = 1:LoopCount
         
         if k > 500
         % 检查stagnantCounter中是否有元素大于32
-        replace_indices = find(stagnantCounter > 32);
-        
+        replace_indices = find(stagnantCounter > 15);
+
             if ~isempty(replace_indices)
             % 从存档B中随机选择个体
             % 选择操作
@@ -169,15 +172,15 @@ for k = 1:LoopCount
                 if fitness_std == 0
                     % 如果标准差为0，说明所有适应度值相同
                     % 在这种情况下，我们可以给每个个体相等的选择概率
-                    selection_prob = ones(PopSize, 1) / PopSize;
+                    selection_prob = ones(size(B,1), 1) / size(B,1);
                 else
                     % 正常进行标准化和后续计算
                     fitness_normalized = (fitness - fitness_mean) / fitness_std;
-                    
+
                     % 使用softmax计算选择概率
                     exp_fitness = exp(fitness_normalized/ T);
                     selection_prob = exp_fitness / sum(exp_fitness);
-                    
+
                     % 添加小的正数 ε 以确保没有零概率
                     epsilon = 1e-10;
                     selection_prob = selection_prob + epsilon;
@@ -185,12 +188,21 @@ for k = 1:LoopCount
                 end
 
                 % 使用 randsample 函数
-                replace_population_indices = randsample(height(B), length(replace_indices), true, selection_prob);
+                replace_population_indices = randsample(size(B,1), length(replace_indices), true, selection_prob);
                 replacement_individuals = B(replace_population_indices, :);
-                
+
+                % 将被替换的个体添加到存档B中
+                B = [B; Solution(replace_indices, :)];
+
+                % 如果B的大小超过PopSize，保留最好的PopSize个个体
+                if size(B, 1) > PopSize
+                    [~, sorted_indices] = sort(B(:, end));
+                    B = B(sorted_indices(1:PopSize), :);
+                end
+
                 % 替换Solution中对应的个体
                 Solution(replace_indices, :) = replacement_individuals;
-                
+
                 % 重置被替换个体的stagnantCounter
                 stagnantCounter(replace_indices) = 0;
             end
@@ -224,11 +236,12 @@ for k = 1:LoopCount
         
         U(1:PopSize,SearchDimension+1) = cec17_func(U(1:PopSize,1:SearchDimension)',AdaptFunc); 
         tmp = (U(1:PopSize,SearchDimension+1) < Solution(1:PopSize,SearchDimension+1));        % 产生 tmp 作为子代替换父代的标记
-        if k > 500
+        
+        if k > 500       
+            % Update stagnantCounter based on conditions
+            stagnantCounter = stagnantCounter + ((lastGeneration == 0 & tmp == 0) | (lastGeneration == 1 & tmp == 0));
+            stagnantCounter(lastGeneration == 0 & tmp == 1) = 0;
             lastGeneration = tmp;
-        % Update stagnantCounter based on conditions
-        stagnantCounter = stagnantCounter + ((lastGeneration == 0 & tmp == 0) | (lastGeneration == 1 & tmp == 0));
-        stagnantCounter(lastGeneration == 0 & tmp == 1) = 0;
         end
 
         temp = repmat(tmp,1,SearchDimension+1);                                                % tmp 的D维复制版本
@@ -248,6 +261,3 @@ end
 Result = Solution(PopSize+1,:);
 
 end
-
-
-
