@@ -2,12 +2,12 @@
 
 A MATLAB implementation of the Adaptive Social Mobility-Restructuring Differential Evolution algorithm for global optimization problems.
 
-## ? Paper Information
+## Paper Information
 
 **Title:** Adaptive social mobility-restructuring differential evolution for global optimization  
 **Paper Link:** https://authors.elsevier.com/a/1li3x3PiGTXL4A
 
-## ? Quick Start
+## Quick Start
 
 ### Prerequisites
 - MATLAB (recommended version R2018a or later)
@@ -30,18 +30,18 @@ By default, the algorithm runs on CEC2017 benchmark with 10 dimensions. To chang
 SearchDimension = 10;  % Change to desired dimension (10, 30, 50, or 100)
 ```
 
-## ? File Structure
+## File Structure
 
 ```
 ASMRDE/
-©À©¤©¤ ASMRDE.m           # Main algorithm implementation
-©À©¤©¤ CEC2017RUN.m       # Algorithm runner and benchmark testing
-©À©¤©¤ cec17_func.mexw64  # CEC2017 benchmark functions (compiled)
-©À©¤©¤ input_data/        # CEC2017 test data files
-©¦   ©À©¤©¤ M_1_D10.txt
-©¦   ©À©¤©¤ M_1_D100.txt
-©¦   ©¸©¤©¤ ...
-©¸©¤©¤ README.md          # This file
+å¿µå²¸å²¸ ASMRDE.m           # Main algorithm implementation
+å¿µå²¸å²¸ CEC2017RUN.m       # Algorithm runner and benchmark testing
+å¿µå²¸å²¸ cec17_func.mexw64  # CEC2017 benchmark functions (compiled)
+å¿µå²¸å²¸ input_data/        # CEC2017 test data files
+å²«   å¿µå²¸å²¸ M_1_D10.txt
+å²«   å¿µå²¸å²¸ M_1_D100.txt
+å²«   å¼©å²¸å²¸ ...
+å¼©å²¸å²¸ README.md          # This file
 ```
 
 ### Key Files Description
@@ -51,7 +51,7 @@ ASMRDE/
 - **`cec17_func.mexw64`**: Compiled CEC2017 benchmark functions
 - **`input_data/`**: Contains transformation matrices and shift data for CEC2017 test functions
 
-## ? Customization
+## Customization
 
 ### Using Different Benchmark Sets
 
@@ -82,7 +82,7 @@ Key parameters can be adjusted in `ASMRDE.m`:
 - **Diversity threshold** (line 75): Population diversity control
 - **Temperature parameters** (line 86): Boltzmann distribution parameter
 
-## ? Output
+## Output
 
 The algorithm generates:
 - **`.mat` files**: Complete results with detailed statistics
@@ -95,14 +95,14 @@ Results include:
 - Convergence curves
 - Population diversity metrics
 
-## ? Contributing
+## Contributing
 
 If you encounter any issues or have suggestions for improvement:
 
 1. **Preferred**: Open an issue on GitHub
 2. **Alternative**: Contact via email
 
-## ? Citation
+## Citation
 
 If you use this code in your research, please cite the original paper:
 
@@ -116,7 +116,7 @@ If you use this code in your research, please cite the original paper:
 }
 ```
 
-## ?? System Requirements
+## System Requirements
 
 - **MATLAB**: R2018a or later recommended
 - **Memory**: At least 4GB RAM for larger dimensions
@@ -124,5 +124,6 @@ If you use this code in your research, please cite the original paper:
 - **Optional**: Parallel Computing Toolbox for faster execution
 
 ---
+
 
 For more details about the algorithm mechanics and experimental results, please refer to the original paper. 
